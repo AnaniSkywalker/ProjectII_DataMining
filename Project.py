@@ -18,6 +18,7 @@ def data_entropy(labeled_data):
     return entropy(probabilities)
 
 def partition_entropy(subsets):
+
     """find the entropy from this partition of data into subsets"""
     total_count = sum(len(subset) for subset in subsets)
     
@@ -72,7 +73,6 @@ def build_tree_id3(inputs, split_candidates=None):
     num_inputs = len(inputs)
     num_trues = len([label for item, label in inputs if label])
     num_falses = num_inputs - num_trues
-    
     if num_trues == 0:                  # if only Falses are left
         return False                    # return a "False" leaf
         
@@ -116,7 +116,7 @@ if __name__ == "__main__":
         ({'level':'Mid','lang':'R','tweets':'yes','phd':'yes'},        True),
         ({'level':'Senior','lang':'Python','tweets':'no','phd':'no'}, False),
         ({'level':'Senior','lang':'R','tweets':'yes','phd':'no'},      True),
-        ({'level':'Junior','lang':'Python','tweets':'yes','phd':'no'}, True),
+        ({'level':'Junior','lang':'Python','tweets':'yes','phd':'yes'}, True),
         ({'level':'Senior','lang':'Python','tweets':'yes','phd':'yes'},True),
         ({'level':'Mid','lang':'Python','tweets':'no','phd':'yes'},    True),
         ({'level':'Mid','lang':'Java','tweets':'yes','phd':'no'},      True),
@@ -152,3 +152,4 @@ if __name__ == "__main__":
 
     print "Intern", classify(tree, { "level" : "Intern" } )
     print "Senior", classify(tree, { "level" : "Senior" } )
+    print " "
