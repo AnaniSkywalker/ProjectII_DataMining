@@ -1,5 +1,5 @@
 from __future__ import division
-from collections import Counter, Original_Item
+from collections import Counter, defaultdict
 from functools import partial
 import math, random
 
@@ -27,13 +27,12 @@ def partition_entropy(subsets):
     return sum( data_entropy(subset) * len(subset) / Count_Of_Sum
                 for subset in subsets )
 
-#This Class Groups together the single item with its proper function key as defined in the dataset
-def group_by(single_Item, function_Key):
-    """returns a Original_Item(list), where each input item 
-    is in the list whose key is function_Key(item)"""
-    groups = Original_Item(list)
-    for item in single_Item:
-        key = function_Key(item)
+def group_by(items, key_fn):
+    """returns a defaultdict(list), where each input item 
+    is in the list whose key is key_fn(item)"""
+    groups = defaultdict(list)
+    for item in items:
+        key = key_fn(item)
         groups[key].append(item)
     return groups
     
@@ -42,7 +41,6 @@ def partition_by(inputs, attribute):
     each input is a pair (attribute_dict, label)"""
     return group_by(inputs, lambda x: x[0][attribute])    
 
-#In this class we are splitting the entropy by each inputs and their defines attributes
 def partition_entropy_by(inputs,attribute):
     """computes the entropy corresponding to the given partition"""        
     partitions = partition_by(inputs, attribute)
@@ -96,7 +94,7 @@ def build_tree_id3(inputs, split_candidates=None):
     
     # recursively build the subtrees
     subtrees = { attribute : build_tree_id3(subset, new_candidates)
-                 for attribute, subset in partitions.itersingle_Item() }
+                 for attribute, subset in partitions.iteritems() }
 
     subtrees[None] = num_trues > num_falses # default case
 
@@ -138,7 +136,6 @@ if __name__ == "__main__":
         print key, partition_entropy_by(senior_inputs, key)
     print
 
-    #This Print function is building the tree by the ID
     print "building the tree"
     tree = build_tree_id3(inputs)
     print tree
