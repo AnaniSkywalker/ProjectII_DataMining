@@ -1,36 +1,39 @@
 from __future__ import division
-from collections import Counter, defaultdict
+from collections import Counter, Original_Item
 from functools import partial
 import math, random
 
-def entropy(class_probabilities):
-    """given a list of class probabilities, compute the entropy"""
-    return sum(-p * math.log(p, 2) for p in class_probabilities if p)
 
-def class_probabilities(labels):
-    total_count = len(labels)
-    return [count / total_count
-            for count in Counter(labels).values()]
+#This Class define the Probability of the each Objects in the dataset
+def probability_Method(name_Of_Objects):
+    Count_Of_Sum = len(name_Of_Objects)
+    return [count / Count_Of_Sum
+            for count in Counter(name_Of_Objects).values()] #Returns the count / Count_Of_Sum
+
+def entropy(probability_Method):
+    """This Is The Method That Computes The probabilities Of The Entropy"""
+    return sum(-poss * math.log(poss, 2) for poss in probability_Method if poss)
 
 def data_entropy(labeled_data):        
-    labels = [label for _, label in labeled_data]
-    probabilities = class_probabilities(labels)
+    name_Of_Objects = [label for _, label in labeled_data]
+    probabilities = probability_Method(name_Of_Objects)
     return entropy(probabilities)
 
 def partition_entropy(subsets):
-
-    """find the entropy from this partition of data into subsets"""
-    total_count = sum(len(subset) for subset in subsets)
+    """This class finds the entropy which we've described in the 
+    entropy from the partition dataset into a subset sheet"""
+    Count_Of_Sum = sum(len(subset) for subset in subsets)
     
-    return sum( data_entropy(subset) * len(subset) / total_count
+    return sum( data_entropy(subset) * len(subset) / Count_Of_Sum
                 for subset in subsets )
 
-def group_by(items, key_fn):
-    """returns a defaultdict(list), where each input item 
-    is in the list whose key is key_fn(item)"""
-    groups = defaultdict(list)
-    for item in items:
-        key = key_fn(item)
+#This Class Groups together the single item with its proper function key as defined in the dataset
+def group_by(single_Item, function_Key):
+    """returns a Original_Item(list), where each input item 
+    is in the list whose key is function_Key(item)"""
+    groups = Original_Item(list)
+    for item in single_Item:
+        key = function_Key(item)
         groups[key].append(item)
     return groups
     
@@ -39,13 +42,14 @@ def partition_by(inputs, attribute):
     each input is a pair (attribute_dict, label)"""
     return group_by(inputs, lambda x: x[0][attribute])    
 
+#In this class we are splitting the entropy by each inputs and their defines attributes
 def partition_entropy_by(inputs,attribute):
     """computes the entropy corresponding to the given partition"""        
     partitions = partition_by(inputs, attribute)
     return partition_entropy(partitions.values())        
 
-def classify(tree, input):
-    """classify the input using the given decision tree"""
+def classify_Data(tree, input):
+    """classify_Data the input using the given decision tree"""
     
     # if this is a leaf node, return its value
     if tree in [True, False]:
@@ -60,7 +64,7 @@ def classify(tree, input):
         subtree_key = None              # we'll use the None subtree
     
     subtree = subtree_dict[subtree_key] # choose the appropriate subtree
-    return classify(subtree, input)     # and use it to classify the input
+    return classify_Data(subtree, input)     # and use it to classify_Data the input
 
 def build_tree_id3(inputs, split_candidates=None):
 
@@ -92,14 +96,14 @@ def build_tree_id3(inputs, split_candidates=None):
     
     # recursively build the subtrees
     subtrees = { attribute : build_tree_id3(subset, new_candidates)
-                 for attribute, subset in partitions.iteritems() }
+                 for attribute, subset in partitions.itersingle_Item() }
 
     subtrees[None] = num_trues > num_falses # default case
 
     return (best_attribute, subtrees)
 
-def forest_classify(trees, input):
-    votes = [classify(tree, input) for tree in trees]
+def forest_classify_Data(trees, input):
+    votes = [classify_Data(tree, input) for tree in trees]
     vote_counts = Counter(votes)
     return vote_counts.most_common(1)[0][0]
 
@@ -134,22 +138,26 @@ if __name__ == "__main__":
         print key, partition_entropy_by(senior_inputs, key)
     print
 
+    #This Print function is building the tree by the ID3
     print "building the tree"
     tree = build_tree_id3(inputs)
     print tree
 
-    print "Junior / Java / tweets / no phd", classify(tree, 
+    print "Junior / Java / tweets / no phd", classify_Data(tree, 
         { "level" : "Junior", 
           "lang" : "Java", 
           "tweets" : "yes", 
           "phd" : "no"} ) 
+
   # Hey This is Carrie
-    print "Junior / Java / tweets / phd", classify(tree, 
+    print "Junior / Java / tweets / phd", classify_Data(tree, 
         { "level" : "Junior", 
                  "lang" : "Java", 
                  "tweets" : "yes", 
                  "phd" : "yes"} )
 
-    print "Intern", classify(tree, { "level" : "Intern" } )
-    print "Senior", classify(tree, { "level" : "Senior" } )
+    print "Intern", classify_Data(tree, { "level" : "Intern" } )
+    print "Senior", classify_Data(tree, { "level" : "Senior" } )
     print " "
+
+
