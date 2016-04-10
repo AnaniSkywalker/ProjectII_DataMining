@@ -48,8 +48,8 @@ def partition_entropy_by(inputs,attribute):
     partitions = partition_by(inputs, attribute)
     return partition_entropy(partitions.values())        
 
-def classify_Data(tree, input):
-    """classify_Data the input using the given decision tree"""
+def classify(tree, input):
+    """classify the input using the given decision tree"""
     
     # if this is a leaf node, return its value
     if tree in [True, False]:
@@ -64,7 +64,7 @@ def classify_Data(tree, input):
         subtree_key = None              # we'll use the None subtree
     
     subtree = subtree_dict[subtree_key] # choose the appropriate subtree
-    return classify_Data(subtree, input)     # and use it to classify_Data the input
+    return classify(subtree, input)     # and use it to classify the input
 
 def build_tree_id3(inputs, split_candidates=None):
 
@@ -102,8 +102,8 @@ def build_tree_id3(inputs, split_candidates=None):
 
     return (best_attribute, subtrees)
 
-def forest_classify_Data(trees, input):
-    votes = [classify_Data(tree, input) for tree in trees]
+def forest_classify(trees, input):
+    votes = [classify(tree, input) for tree in trees]
     vote_counts = Counter(votes)
     return vote_counts.most_common(1)[0][0]
 
@@ -138,26 +138,26 @@ if __name__ == "__main__":
         print key, partition_entropy_by(senior_inputs, key)
     print
 
-    #This Print function is building the tree by the ID3
+    #This Print function is building the tree by the ID
     print "building the tree"
     tree = build_tree_id3(inputs)
     print tree
 
-    print "Junior / Java / tweets / no phd", classify_Data(tree, 
+    print "Junior / Java / tweets / no phd", classify(tree, 
         { "level" : "Junior", 
           "lang" : "Java", 
           "tweets" : "yes", 
           "phd" : "no"} ) 
 
   # Hey This is Carrie
-    print "Junior / Java / tweets / phd", classify_Data(tree, 
+    print "Junior / Java / tweets / phd", classify(tree, 
         { "level" : "Junior", 
                  "lang" : "Java", 
                  "tweets" : "yes", 
                  "phd" : "yes"} )
 
-    print "Intern", classify_Data(tree, { "level" : "Intern" } )
-    print "Senior", classify_Data(tree, { "level" : "Senior" } )
+    print "Intern", classify(tree, { "level" : "Intern" } )
+    print "Senior", classify(tree, { "level" : "Senior" } )
     print " "
 
 
